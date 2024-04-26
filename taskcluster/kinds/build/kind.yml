@@ -8,8 +8,22 @@ transforms:
     - ffios_taskgraph.transforms.bitrise
     - taskgraph.transforms.task
 
-
+task-defaults:
+    worker-type: bitrise
+    bitrise:
+        artifact_prefix: public
 tasks:
+    build-firefox-debug:
+        description: Build firefox_configure_build bitrise workflow
+        run-on-tasks-for: 
+            - github-pull-request
+            - github-push
+        bitrise:
+            workflows:
+                - firefox_configure_build
+        optimization:
+            skip-unless-changed:
+                - bitrise.yml
     screenshots:
         description: Generate build instrumented for screenshots, including en-US pictures
         attributes:
@@ -22,7 +36,6 @@ tasks:
             platform: ios/opt
         worker-type: bitrise
         bitrise:
-            artifact_prefix: public
             workflows:
                 - L10nBuild
         index:

@@ -15,7 +15,9 @@ task-defaults:
 tasks:
     build-firefox-debug:
         description: Build firefox_configure_build bitrise workflow
-        run-on-tasks-for: []
+        run-on-tasks-for: 
+            - github-pull-request
+            - github-push
         bitrise:
             workflows:
                 - firefox_configure_build

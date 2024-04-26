@@ -21,9 +21,9 @@ tasks:
         bitrise:
             workflows:
                 - firefox_configure_build
-        optimization:
-            skip-unless-changed:
-                - bitrise.yml
+        #optimization:
+        #    skip-unless-changed:
+        #        - bitrise.yml
     screenshots:
         description: Generate build instrumented for screenshots, including en-US pictures
         attributes:

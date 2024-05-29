@@ -12,6 +12,7 @@ task-defaults:
     worker-type: bitrise
     bitrise:
         artifact_prefix: public
+
 tasks:
     build-firefox-debug:
         description: Build firefox_configure_build bitrise workflow

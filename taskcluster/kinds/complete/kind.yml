@@ -5,31 +5,25 @@
 loader: taskgraph.loader.transform:loader
 
 kind-dependencies:
-    - build-firefox-debug
-    - build-focus-debug
+    - build
 
 transforms:
-    - taskgraph.transforms.code_review:transforms
-    - android_taskgraph.transforms.chunk:transforms
-    - android_taskgraph.transforms.complete:transforms
-    - taskgraph.transforms.job:transforms
-    - taskgraph.transforms.task:transforms
+    - ffios_taskgraph.transforms.bitrise
+    - taskgraph.transforms.task
 
 task-defaults:
-    attributes:
-        code-review: true
     worker-type: bitrise
     requires: all-resolved
     run:
         command:
             task-reference:
                 /builds/worker/checkouts/vcs/taskcluster/scripts/are_dependencies_completed.py <self>
-        use-caches: false
-        using: run-task
 
 tasks:
     pr:
-        description: PR Summary Task
+        description: Build firefox_configure_build bitrise workflow
         run-on-tasks-for: 
             - github-pull-request
             - github-push
+        bitrise:
+            workflows: []

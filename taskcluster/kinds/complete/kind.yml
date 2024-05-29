@@ -14,10 +14,10 @@ transforms:
 task-defaults:
     worker-type: bitrise
     requires: all-resolved
-    run:
-        command:
-            task-reference:
-                /builds/worker/checkouts/vcs/taskcluster/scripts/are_dependencies_completed.py <self>
+    #run:
+    #    command:
+    #        task-reference:
+    #           /builds/worker/checkouts/vcs/taskcluster/scripts/are_dependencies_completed.py <self>
 
 tasks:
     pr:

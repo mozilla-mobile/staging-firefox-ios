@@ -12,7 +12,7 @@ transforms:
     - taskgraph.transforms.task
 
 task-defaults:
-    worker-type: bitrise
+    worker-type: misc
     requires: all-resolved
     #run:
     #    command:

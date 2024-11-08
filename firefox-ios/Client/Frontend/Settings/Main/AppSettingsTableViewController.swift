@@ -256,9 +256,18 @@ class AppSettingsTableViewController: SettingsTableViewController,
             statusText: .SettingsShowLinkPreviewsStatus
         )
 
+        let blockOpeningExternalAppsSettings = BoolSetting(
+            prefs: profile.prefs,
+            theme: themeManager.currentTheme(for: windowUUID),
+            prefKey: PrefsKeys.BlockOpeningExternalApps,
+            defaultValue: false,
+            titleText: .SettingsBlockOpeningExternalAppsTitle
+        )
+
         generalSettings += [
             offerToOpenCopiedLinksSettings,
-            showLinksPreviewSettings
+            showLinksPreviewSettings,
+            blockOpeningExternalAppsSettings
         ]
 
         return [SettingSection(title: NSAttributedString(string: .SettingsGeneralSectionTitle),
@@ -375,7 +384,7 @@ class AppSettingsTableViewController: SettingsTableViewController,
 
         let urlString = URL.mozInternalScheme + "://deep-link?url=/action/show-intro-onboarding"
         guard let url = URL(string: urlString) else { return }
-        applicationHelper.open(url)
+        applicationHelper.open(url, inWindow: windowUUID)
     }
 
     func pressedFirefoxSuggest() {

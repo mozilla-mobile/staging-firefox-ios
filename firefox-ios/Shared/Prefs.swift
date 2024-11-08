@@ -30,6 +30,7 @@ public struct PrefsKeys {
     public static let DidDismissDefaultBrowserMessage = "DidDismissDefaultBrowserCard"
     public static let KeyDidShowDefaultBrowserOnboarding = "didShowDefaultBrowserOnboarding"
     public static let ContextMenuShowLinkPreviews = "showLinkPreviews"
+    public static let BlockOpeningExternalApps = "blockOpeningExternalApps"
     public static let NewTabCustomUrlPrefKey = "HomePageURLPref"
     public static let GoogleTopSiteAddedKey = "googleTopSiteAddedKey"
     public static let GoogleTopSiteHideKey = "googleTopSiteHideKey"
@@ -174,11 +175,6 @@ public struct PrefsKeys {
 
     // Used to show splash screen only during first time on fresh install
     public static let splashScreenShownKey = "splashScreenShownKey"
-}
-
-public struct PrefsDefaults {
-    public static let ChineseHomePageURL = "https://mobile.firefoxchina.cn/?ios"
-    public static let ChineseNewTabDefault = "HomePage"
 }
 
 public protocol Prefs {

@@ -10,12 +10,13 @@ import Shared
 
 // This class subclasses the legacy tab manager temporarily so we can
 // gradually migrate to the new system
-class TabManagerImplementation: LegacyTabManager, Notifiable {
+class TabManagerImplementation: LegacyTabManager, Notifiable, WindowSimpleTabsProvider {
     private let tabDataStore: TabDataStore
     private let tabSessionStore: TabSessionStore
     private let imageStore: DiskImageStore?
     private let tabMigration: TabMigrationUtility
     private var tabsTelemetry = TabsTelemetry()
+    private let windowManager: WindowManager
     var notificationCenter: NotificationProtocol
     var inactiveTabsManager: InactiveTabsManagerProtocol
 
@@ -29,22 +30,25 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
          imageStore: DiskImageStore = AppContainer.shared.resolve(),
          logger: Logger = DefaultLogger.shared,
          uuid: WindowUUID,
-         tabDataStore: TabDataStore = AppContainer.shared.resolve(),
+         tabDataStore: TabDataStore? = nil,
          tabSessionStore: TabSessionStore = DefaultTabSessionStore(),
-         tabMigration: TabMigrationUtility = DefaultTabMigrationUtility(),
+         tabMigration: TabMigrationUtility? = nil,
          notificationCenter: NotificationProtocol = NotificationCenter.default,
-         inactiveTabsManager: InactiveTabsManagerProtocol = InactiveTabsManager()) {
-            self.tabDataStore = tabDataStore
-            self.tabSessionStore = tabSessionStore
-            self.imageStore = imageStore
-            self.tabMigration = tabMigration
-            self.notificationCenter = notificationCenter
-            self.inactiveTabsManager = inactiveTabsManager
-            super.init(profile: profile, uuid: uuid)
+         inactiveTabsManager: InactiveTabsManagerProtocol = InactiveTabsManager(),
+         windowManager: WindowManager = AppContainer.shared.resolve()) {
+        let dataStore =  tabDataStore ?? DefaultTabDataStore(logger: logger, fileManager: DefaultTabFileManager())
+        self.tabDataStore = dataStore
+        self.tabSessionStore = tabSessionStore
+        self.imageStore = imageStore
+        self.tabMigration = tabMigration ?? DefaultTabMigrationUtility(tabDataStore: dataStore)
+        self.notificationCenter = notificationCenter
+        self.inactiveTabsManager = inactiveTabsManager
+        self.windowManager = windowManager
+        super.init(profile: profile, uuid: uuid)
 
-            setupNotifications(forObserver: self,
-                               observing: [UIApplication.willResignActiveNotification,
-                                           .TabMimeTypeDidSet])
+        setupNotifications(forObserver: self,
+                           observing: [UIApplication.willResignActiveNotification,
+                                       .TabMimeTypeDidSet])
     }
 
     // MARK: - Restore tabs
@@ -237,8 +241,7 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
             await tabDataStore.saveWindowData(window: windowData, forced: forced)
 
             // Save simple tabs, used by widget extension
-            let simpleTabs = SimpleTab.convertToSimpleTabs(windowData.tabData)
-            SimpleTab.saveSimpleTab(tabs: simpleTabs)
+            windowManager.performMultiWindowAction(.saveSimpleTabs)
 
             logger.log("Preserve tabs ended", level: .debug, category: .tabs)
         }
@@ -271,16 +274,20 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
                            tabGroupData: groupData)
         }
 
-        logger.log("We are preserving \(tabData.count) tabs",
-                   level: .debug,
-                   category: .tabs)
+        let logInfo: String
+        let windowCount = windowManager.windows.count
+        let totalTabCount =
+        (windowCount > 1 ? windowManager.allWindowTabManagers().map({ $0.normalTabs.count }).reduce(0, +) : 0)
+        logInfo = (windowCount == 1) ? "(1 window)" : "(of \(totalTabCount) total tabs across \(windowCount) windows)"
+        logger.log("Tab manager is preserving \(tabData.count) tabs \(logInfo)", level: .debug, category: .tabs)
 
         return tabData
     }
 
     /// storeChanges is called when a web view has finished loading a page
     override func storeChanges() {
-        saveTabs(toProfile: profile, normalTabs, inactiveTabs)
+        let windowManager: WindowManager = AppContainer.shared.resolve()
+        windowManager.performMultiWindowAction(.storeTabs)
         preserveTabs()
         saveCurrentTabSessionData()
     }
@@ -334,13 +341,16 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
                                        previous: previous,
                                        sessionData: sessionData)
 
+            // Default to false if the feature flag is not enabled
+            var isPrivate = false
             if featureFlags.isFeatureEnabled(.feltPrivacySimplifiedUI, checking: .buildOnly) {
-                let context = BoolValueContext(boolValue: tab.isPrivate, windowUUID: windowUUID)
-                store.dispatch(PrivateModeUserAction.setPrivateModeTo(context))
-            } else {
-                let context = BoolValueContext(boolValue: false, windowUUID: windowUUID)
-                store.dispatch(PrivateModeUserAction.setPrivateModeTo(context))
+                isPrivate = tab.isPrivate
             }
+
+            let action = PrivateModeAction(isPrivate: isPrivate,
+                                           windowUUID: windowUUID,
+                                           actionType: PrivateModeActionType.setPrivateModeTo)
+            store.dispatch(action)
 
             didSelectTab(url)
             updateMenuItemsForSelectedTab()
@@ -367,10 +377,11 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
     private func didSelectTab(_ url: URL?) {
         tabsTelemetry.stopTabSwitchMeasurement()
         AppEventQueue.completed(.selectTab(url, windowUUID))
-        let context = GeneralBrowserContext(selectedTabURL: url,
-                                            isPrivateBrowsing: selectedTab?.isPrivate ?? false,
-                                            windowUUID: windowUUID)
-        store.dispatch(GeneralBrowserAction.updateSelectedTab(context))
+        let action = GeneralBrowserAction(selectedTabURL: url,
+                                          isPrivateBrowsing: selectedTab?.isPrivate ?? false,
+                                          windowUUID: windowUUID,
+                                          actionType: GeneralBrowserActionType.updateSelectedTab)
+        store.dispatch(action)
     }
 
     @MainActor
@@ -534,5 +545,15 @@ class TabManagerImplementation: LegacyTabManager, Notifiable {
         default:
             break
         }
+    }
+
+    // MARK: - WindowSimpleTabsProvider
+
+    func windowSimpleTabs() -> [TabUUID: SimpleTab] {
+        let activeTabID = UUID(uuidString: self.selectedTab?.tabUUID ?? "") ?? UUID()
+        let windowData = WindowData(id: windowUUID,
+                                    activeTabId: activeTabID,
+                                    tabData: self.generateTabDataForSaving())
+        return SimpleTab.convertToSimpleTabs(windowData.tabData)
     }
 }

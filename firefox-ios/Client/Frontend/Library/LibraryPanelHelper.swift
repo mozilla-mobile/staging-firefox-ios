@@ -5,6 +5,7 @@
 import UIKit
 import Shared
 import Storage
+import Common
 
 protocol LibraryPanelDelegate: AnyObject {
     func libraryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
@@ -81,7 +82,7 @@ class LibraryPanelHelper {
     }
 
     lazy var enabledPanels: [LibraryPanelDescriptor] = {
-        let bookmarksViewModel = BookmarksPanelViewModel(profile: profile)
+        let bookmarksViewModel = BookmarksPanelViewModel(profile: profile, bookmarksHandler: profile.places)
 
         return [
             LibraryPanelDescriptor(

@@ -674,8 +674,8 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             }
         }
         screenState.gesture(forAction: Action.FxATypePasswordNewAccount) { userState in
-            app.secureTextFields.element(boundBy: 0).tap()
-            app.secureTextFields.element(boundBy: 0).typeText(userState.fxaPassword!)
+            app.secureTextFields.element(boundBy: 1).tap()
+            app.secureTextFields.element(boundBy: 1).typeText(userState.fxaPassword!)
         }
         screenState.gesture(forAction: Action.FxATypePasswordExistingAccount) { userState in
             app.secureTextFields.element(boundBy: 0).tap()
@@ -910,7 +910,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
                 transitionTo: HomePanelsScreen
             )
             screenState.tap(
-                app.otherElements["nav-tabcounter"],
+                app.otherElements[StandardImageIdentifiers.Large.tab],
                 forAction: Action.OpenPrivateTabLongPressTabsButton,
                 transitionTo: NewTabScreen
             ) { userState in

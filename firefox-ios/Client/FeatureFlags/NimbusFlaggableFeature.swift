@@ -12,6 +12,7 @@ import UIKit
 enum NimbusFeatureFlagID: String, CaseIterable {
     case accountSettingsRedux
     case addressAutofill
+    case addressAutofillEdit
     case bottomSearchBar
     case contextualHintForToolbar
     case creditCardAutofillStatus
@@ -26,16 +27,16 @@ enum NimbusFeatureFlagID: String, CaseIterable {
     case isToolbarCFREnabled
     case jumpBackIn
     case loginAutofill
-    case microSurvey
+    case microsurvey
     case nightMode
     case preferSwitchToOpenTabOverDuplicate
     case reduxSearchSettings
     case reportSiteIssue
     case searchHighlights
-    case shareSheetChanges
-    case shareToolbarChanges
     case splashScreen
     case tabTrayRefactor
+    case toolbarRefactor
+    case trackingProtectionRefactor
     case zoomFeature
 }
 
@@ -69,13 +70,14 @@ struct NimbusFlaggableFeature: HasNimbusSearchBar {
         case .contextualHintForToolbar,
                 .accountSettingsRedux,
                 .addressAutofill,
+                .addressAutofillEdit,
                 .creditCardAutofillStatus,
                 .fakespotBackInStock,
                 .fakespotFeature,
                 .fakespotProductAds,
                 .isToolbarCFREnabled,
                 .loginAutofill,
-                .microSurvey,
+                .microsurvey,
                 .nightMode,
                 .preferSwitchToOpenTabOverDuplicate,
                 .reduxSearchSettings,
@@ -83,10 +85,10 @@ struct NimbusFlaggableFeature: HasNimbusSearchBar {
                 .feltPrivacySimplifiedUI,
                 .feltPrivacyFeltDeletion,
                 .searchHighlights,
-                .shareSheetChanges,
-                .shareToolbarChanges,
                 .splashScreen,
                 .tabTrayRefactor,
+                .toolbarRefactor,
+                .trackingProtectionRefactor,
                 .zoomFeature:
             return nil
         }

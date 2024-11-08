@@ -54,6 +54,16 @@ public struct AccessibilityIdentifiers {
             static let creditCardAutofillButton = "KeyboardAccessory.creditCardAutofillButton"
             static let loginAutofillButton = "KeyboardAccessory.loginAutofillButton"
         }
+
+        struct AddressToolbar {
+            static let clear = "AddressToolbar.clear"
+            static let searchTextField = "AddressToolbar.address"
+            static let searchEngine = "AddressToolbar.searchEngine"
+        }
+
+        struct ToolbarButtons {
+            static let qrCode = "Toolbar.QRCode.button"
+        }
     }
 
     struct ContextualHints {
@@ -131,10 +141,18 @@ public struct AccessibilityIdentifiers {
         public static let back = "Back"
     }
 
-    struct MicroSurvey {
+    struct Microsurvey {
         struct Prompt {
-            static let closeButton = "MicroSurvey.Prompt.CloseButton"
-            static let takeSurveyButton = "MicroSurvey.Prompt.TakeSurveyButton"
+            static let closeButton = "Microsurvey.Prompt.CloseButton"
+            static let takeSurveyButton = "Microsurvey.Prompt.TakeSurveyButton"
+        }
+
+        struct Survey {
+            static let firefoxLogo = "Microsurvey.Survey.FirefoxLogo"
+            static let closeButton = "Microsurvey.Survey.CloseButton"
+            static let privacyPolicyLink = "Microsurvey.Prompt.PrivacyPolicyLink"
+            static let submitButton = "Microsurvey.Survey.SubmitButton"
+            static let radioButton = "Microsurvey.Survey.RadioButton"
         }
     }
 

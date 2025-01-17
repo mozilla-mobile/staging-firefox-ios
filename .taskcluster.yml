@@ -155,7 +155,7 @@ tasks:
                 routes:
                     $flattenDeep:
                         - checks
-                        - $if: 'level == "3"'
+                        - $if: 'level == "3" || repoUrl == "https://github.com/mozilla-mobile/staging-firefox-ios"'
                           then:
                             - tc-treeherder.v2.${project}.${head_sha}
                             - $if: 'tasks_for == "github-push"'

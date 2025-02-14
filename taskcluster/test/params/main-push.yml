@@ -1,21 +1,22 @@
 ---
 base_ref: origin/main
 base_repository: https://github.com/mozilla-mobile/firefox-ios
-base_rev: 8c467abc51884d19f5aebf42568ae8cc6abae1e5
-build_date: 1705084000
+base_rev: 8cb48c4d8caf769fa443d25c6e90cb39f2d70997
+build_date: 1739527869
 build_number: 1
 commit_message: ""
 do_not_optimize: []
 enable_always_target: true
 existing_tasks: {}
+files_changed: []
 filters:
   - target_tasks_method
 head_ref: refs/heads/main
 head_repository: https://github.com/mozilla-mobile/firefox-ios
-head_rev: 8c467abc51884d19f5aebf42568ae8cc6abae1e5
+head_rev: 8cb48c4d8caf769fa443d25c6e90cb39f2d70997
 head_tag: ''
 level: '3'
-moz_build_date: '20240112182640'
+moz_build_date: '20250214101109'
 next_version: null
 optimize_strategies: null
 optimize_target_tasks: true
@@ -27,4 +28,4 @@ pushlog_id: '0'
 repository_type: git
 target_tasks_method: default
 tasks_for: github-push
-version: null
+version: '137.0'

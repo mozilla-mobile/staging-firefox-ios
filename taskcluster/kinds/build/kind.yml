@@ -27,3 +27,19 @@ tasks:
                 - L10nBuild
         index:
             type: l10n-screenshots
+    test:
+      description: Test a build for promotion
+      run-on-tasks-for: []
+      treeherder:
+        symbol: B
+        kind: build
+        tier: 1
+        platform: ios/opt
+      worker-type: bitrise
+      shipping-phase: promote
+      attributes:
+        release-type: release
+      bitrise:
+        artifact_prefix: public
+        workflows:
+          - pipeline_build_and_test

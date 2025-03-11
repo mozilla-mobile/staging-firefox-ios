@@ -27,8 +27,8 @@ tasks:
                 - L10nBuild
         index:
             type: l10n-screenshots
-    test:
-      description: Test a build for promotion
+    release:
+      description: Start a release build
       run-on-tasks-for: []
       treeherder:
         symbol: B
@@ -42,4 +42,4 @@ tasks:
       bitrise:
         artifact_prefix: public
         workflows:
-          - pipeline_build_and_test
+          - release_promote_firefox

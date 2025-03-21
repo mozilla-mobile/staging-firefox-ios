@@ -33,6 +33,7 @@ stages:
         run_if: '{{getenv "BUILD_FOCUS_IOS" | eq "true"}}'
     - klar_unit_test:
         run_if: '{{getenv "BUILD_FOCUS_IOS" | eq "true"}}'
+
 workflows:
   firefox_accessibility_test:
     before_run:

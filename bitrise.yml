@@ -2183,9 +2183,9 @@ workflows:
             set -x
 
             cd firefox-ios/Client.xcodeproj
-            sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer"/CODE_SIGN_IDENTITY = "iPhone Distribution"/' project.pbxproj
+            #sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer"/CODE_SIGN_IDENTITY = "iPhone Distribution"/' project.pbxproj
             cd -
-        title: Set xcodeproj code_sign_identity
+        title: Set xcodeproj code_sign_identity # TODO: Figure out how to not run this for staging
     - script@1.2.1:
         title: NPM, ContentBlockerGen
         inputs:
@@ -2239,14 +2239,14 @@ workflows:
         - team_id: 43AQ936H96
         - export_method: app-store
         - output_tool: xcodebuild
-        - distribution_method: app-store
+        - distribution_method: development # TODO: app-store on prod
         - export_development_team: 43AQ936H96
         - configuration: "$BITRISE_SCHEME"
     - deploy-to-bitrise-io@2.9.2: {}
     envs:
     - opts:
         is_expand: false
-      BITRISE_SCHEME: Firefox
+      BITRISE_SCHEME: FirefoxStaging # TODO: Figure out how to change this based on repo
     description: This step is used during release promotion to build a firefox release
 
 app:

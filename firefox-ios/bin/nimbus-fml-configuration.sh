@@ -28,6 +28,9 @@ case "${CONFIGURATION}" in
     Firefox)
         CHANNEL="release"
         ;;
+    FirefoxStaging)
+        CHANNEL="developer"
+        ;;
     *) # The channel must match up with the channels listed in APP_FML_FILE.
         CHANNEL="$CONFIGURATION"
         ;;

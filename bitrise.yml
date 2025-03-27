@@ -64,7 +64,7 @@ workflows:
         - xcodebuild_options: '"COMPILER_INDEX_STORE_ENABLE=NO" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO"'
         - xctestrun: "/Users/vagrant/git/DerivedData/Build/Products/Fennec_AccessibilityTestPlan_iphonesimulator18.2-arm64.xctestrun"
         - maximum_test_repetitions: 2
-    
+
     - deploy-to-bitrise-io@2.9.2: {}
   firefox_configure_build:
     before_run:
@@ -256,7 +256,7 @@ workflows:
 
             # Determine which application to base configuration while comparing against branch destination:
             # Bitrise: https://devcenter.bitrise.io/en/references/available-environment-variables.html
-            #  
+            #
             # BITRISEIO_GIT_BRANCH_DEST is used only on pull requests and is set to destination/branch (i.e, release/v123 )
             # BITRISE_GIT_BRANCH is the git branch that is built by Bitrise (i.e, release/v123 )
             # BITRISE_GIT_COMMIT is the git commit hash that is built by Bitrise
@@ -621,7 +621,7 @@ workflows:
                 FILES_CHANGED=$(git diff --name-only origin/main..."$BITRISE_GIT_COMMIT")
             fi
 
-            # Manual triggers leave empty commits. 
+            # Manual triggers leave empty commits.
             # Check for empty commit/PR and exit blacklist check if found to avoid erroring out.
             echo "Files changed in commit/PR: $FILES_CHANGED"
             if [[ -z "$FILES_CHANGED" ]]; then
@@ -1312,7 +1312,7 @@ workflows:
         - content: |-
             #!/usr/bin/env bash
             set -ex
-             
+
             if [ -e $HOME/sdk/google-cloud-sdk ]; then
               echo "Google Cloud SDK found, skipping installation..."
             else
@@ -1335,7 +1335,7 @@ workflows:
             set -ex
             set -o pipefail
 
-            curl -o /tmp/key-file.json $BITRISEIO_GOOGLE_APPLICATION_CREDENTIALS_URL 
+            curl -o /tmp/key-file.json $BITRISEIO_GOOGLE_APPLICATION_CREDENTIALS_URL
             $HOME/sdk/google-cloud-sdk/bin/gcloud version
             $HOME/sdk/google-cloud-sdk/bin/gcloud auth activate-service-account -q --key-file /tmp/key-file.json
             $HOME/sdk/google-cloud-sdk/bin/gcloud config set project "$GOOGLE_CLOUD_PROJECT"
@@ -1370,7 +1370,7 @@ workflows:
             # unpack GLCOUD_EXIT_CODE from string to int, if gcloud returns string instead of int for exit code
             if [ $((GCLOUD_EXIT_CODE)) -ne 0 ]; then
                 SLACK_MESSAGE_PRETEXT="*Firefox-iOS* :firefox: *Archive/Robo Test* :x:"
-            else 
+            else
                 SLACK_MESSAGE_PRETEXT="*Firefox-iOS* :firefox: *Archive/Robo Test* :white_check_mark:"
             fi
             envman add --key SLACK_MESSAGE_PRETEXT --value "$SLACK_MESSAGE_PRETEXT"
@@ -1492,7 +1492,7 @@ workflows:
         - content: |-
             #!/usr/bin/env bash
             set -e
-             
+
             if [ -e $HOME/google-cloud-sdk ]; then
               echo "Google Cloud SDK found, skipping installation..."
             else
@@ -1597,7 +1597,7 @@ workflows:
             # create and print perf data object for perfherder ingest via taskcluster log output
             xcrun xcresulttool graph --path "$BITRISE_XCRESULT"
             ls ..
-            # If this ever breaks, check the xcresult_extract.py function find_xcresult_path 
+            # If this ever breaks, check the xcresult_extract.py function find_xcresult_path
             # and figure out exactly what it is doing because we are using Fennec as the scheme
             # and it works for both Fennec and Fennec_Enterprise, but I don't know why.
             # I would change it here but I am too afraid to break it.
@@ -1609,7 +1609,7 @@ workflows:
 
   #
   # *****%*****%***** FOCUS WORKFLOWS *****%*****%*****
-  # 
+  #
   focus_configure_build:
     before_run:
     - focus-clone-and-build-dependencies
@@ -1869,7 +1869,7 @@ workflows:
             /usr/libexec/PlistBuddy -c "Add :com.apple.developer.web-browser bool true" focus-ios/Focus.entitlements
             /usr/libexec/PlistBuddy -c "Add :com.apple.developer.web-browser bool true" focus-ios/Klar.entitlements
 
-  # # Update the name change in Taskcluster files 
+  # # Update the name change in Taskcluster files
   # focus_l10n_build:
   #   before_run:
   #   - focus-clone-and-build-dependencies
@@ -2137,6 +2137,23 @@ workflows:
             set -x
             focus-ios/focus-ios-tests/tools/sentry-cli --auth-token "$SENTRY_AUTH_TOKEN" upload-dif \
               --org mozilla --project klar-ios "$BITRISE_DSYM_DIR_PATH"
+  release_promotion_push:
+    envs:
+    - IPA_PATH: /tmp/Client.ipa
+    steps:
+    - file-downloader@1:
+        title: Download Artifact
+        inputs:
+        - destination: $IPA_PATH
+        - source: $IPA_SOURCE_URL
+    - script@1.2.1:
+        title: Check if IPA was downloaded
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -xe
+            echo $IPA_PATH
+            file $IPA_PATH
 
 app:
   envs:

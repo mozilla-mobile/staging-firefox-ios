@@ -42,4 +42,4 @@ tasks:
       bitrise:
         artifact_prefix: public
         workflows:
-          - release_promote_firefox
+          - release_promotion_promote

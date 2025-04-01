@@ -27,3 +27,19 @@ tasks:
                 - L10nBuild
         index:
             type: l10n-screenshots
+    release:
+      description: Start a release build
+      run-on-tasks-for: []
+      treeherder:
+        symbol: B
+        kind: build
+        tier: 1
+        platform: ios/opt
+      worker-type: bitrise
+      shipping-phase: promote
+      attributes:
+        release-type: release
+      bitrise:
+        artifact_prefix: public
+        workflows:
+          - release_promotion_promote

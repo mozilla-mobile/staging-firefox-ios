@@ -2325,12 +2325,18 @@ workflows:
   release_promotion_push:
     envs:
     - IPA_PATH: /tmp/Client.ipa
+    - DSYM_PATH: /tmp/symbols.zip
     steps:
     - file-downloader@1:
         title: Download Artifact
         inputs:
         - destination: $IPA_PATH
         - source: https://firefox-ci-tc.services.mozilla.com/api/queue/v1/task/$BUILD_TASK_ID/artifacts/public%2Frelease_promotion_promote%2FClient.ipa
+    - file-downloader@1:
+        title: Download symbols
+        inputs:
+        - destination: $DSYM_PATH
+        - source: https://firefox-ci-tc.services.mozilla.com/api/queue/v1/task/$BUILD_TASK_ID/artifacts/public%2Frelease_promotion_promote%2FClient.dSYM.zip
     - script@1.2.1:
         title: Check if IPA was downloaded
         inputs:
@@ -2339,6 +2345,24 @@ workflows:
             set -xe
             echo $IPA_PATH
             file $IPA_PATH
+    - script@1.2.1:
+        title: Check if symbols were downloaded
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -xe
+            echo $DSYM_PATH
+            file $DSYM_PATH
+    - script@1.2.1:
+        title: Upload Firefox Prod Beta Symbols
+        run_if: |-
+          {{enveq "BITRISE_APP_SLUG" "firefox-ios"}}
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -x
+            firefox-ios/ThirdParty/sentry-cli --auth-token "$SENTRY_AUTH_TOKEN_FIREFOX" upload-dif \
+              --org mozilla --project firefox-ios "$DSYM_PATH"
     - deploy-to-itunesconnect-application-loader@1:
         title: Deploy to AppStoreConnect
         run_if: |-

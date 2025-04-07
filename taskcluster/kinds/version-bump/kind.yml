@@ -1,0 +1,29 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+---
+loader: taskgraph.loader.transform:loader
+
+transforms:
+    #- taskgraph.transforms.from_deps
+    - ffios_taskgraph.transforms.version_bump
+    - taskgraph.transforms.task
+
+tasks:
+  version-bump:
+    description: Firefox iOS version bump
+    label: version-bump
+    run-on-tasks-for: []
+    shipping-phase: ship
+    attributes:
+      release-type: release
+    worker-type: tree
+    worker:
+      bump: true
+      bump-files: ["version.txt"]
+      push: true # TODO: android didn't push on level != 3, not sure why since that would only be staging for us
+    treeherder:
+      symbol: vb
+      tier: 1
+      kind: build
+

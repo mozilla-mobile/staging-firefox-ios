@@ -32,6 +32,11 @@ workers:
             implementation: docker-worker
             os: linux
             worker-type: 'b-linux-gcp'
+        tree:
+            provisioner: scriptworker-k8s
+            implementation: scriptworker-tree
+            os: scriptworker
+            worker-type: mobile-{level}-tree-dev
 
 scriptworker:
     scope-prefix: project:mobile:firefox-ios:releng

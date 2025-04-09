@@ -1,0 +1,34 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+---
+loader: taskgraph.loader.transform:loader
+
+transforms:
+    - ffios_taskgraph.transforms.github_release
+    - taskgraph.transforms.task
+
+tasks:
+    release:
+      description: Create a Github release
+      run-on-tasks-for: []
+      treeherder:
+        symbol: gh-r
+        tier: 1
+        kind: build
+      worker-type: github
+      shipping-phase: ship
+      attributes:
+        release-type: release
+      worker:
+        action: release
+        git-tag: "{head_tag}"
+        github-project:
+          by-level:
+            '3': firefox-ios
+            default: staging-firefox-ios
+        is-prerelease: false
+        release-name:
+          by-level:
+            '3': "Firefox v{version}"
+            default: "Staging Firefox v{version}"

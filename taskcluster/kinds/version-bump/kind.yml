@@ -5,13 +5,17 @@
 loader: taskgraph.loader.transform:loader
 
 transforms:
-    #- taskgraph.transforms.from_deps
+    - taskgraph.transforms.from_deps
     - ffios_taskgraph.transforms.version_bump
     - taskgraph.transforms.task
+
+kind-dependencies:
+  - github-release
 
 tasks:
   version-bump:
     description: Firefox iOS version bump
+    from-deps: {}
     label: version-bump
     run-on-tasks-for: []
     shipping-phase: ship

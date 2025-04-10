@@ -13,10 +13,9 @@ kind-dependencies:
   - github-release
 
 tasks:
-  version-bump:
+  push:
     description: Firefox iOS version bump
     from-deps: {}
-    label: version-bump
     run-on-tasks-for: []
     shipping-phase: ship
     attributes:

@@ -9,7 +9,7 @@ transforms:
     - taskgraph.transforms.task
 
 tasks:
-    release:
+    publish:
       description: Create a Github release
       run-on-tasks-for: []
       treeherder:

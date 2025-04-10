@@ -12,6 +12,7 @@ def resolve_by_keys(config, tasks):
         for key in (
             "worker.github-project",
             "worker.release-name",
+            "worker.release-body",
         ):
             resolve_keyed_by(
                 task,
@@ -29,6 +30,11 @@ def build_parameters(config, tasks):
     for task in tasks:
         worker = task.setdefault("worker", {})
         worker["git-revision"] = config.params["head_rev"]
-        worker["release-name"] = worker["release-name"].format(**config.params)
-        worker["git-tag"] = worker["git-tag"].format(**config.params)
+
+        for field in (
+            "release-body",
+            "release-name",
+            "git-tag",
+        ):
+            worker[field] = worker[field].format(**config.params)
         yield task

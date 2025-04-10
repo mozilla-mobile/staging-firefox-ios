@@ -33,3 +33,7 @@ tasks:
           by-level:
             '3': "Firefox v{version}"
             default: "Staging Firefox v{version}"
+        release-body:
+          by-level:
+            '3': "This is our official v{version} release of Firefox-iOS."
+            default: "This is a staging release of firefox-iOS v{version}. It should not be used."

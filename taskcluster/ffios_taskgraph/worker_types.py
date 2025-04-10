@@ -55,6 +55,7 @@ def build_version_bump_payload(config, task, task_def):
         Required("git-revision"): str,
         Required("github-project"): str,
         Required("is-prerelease"): bool,
+        Optional("release-body"): str,
         Required("release-name"): str,
     },
 )
@@ -68,6 +69,7 @@ def build_github_release_payload(config, task, task_def):
         "gitTag": worker["git-tag"],
         "gitRevision": worker["git-revision"],
         "isPrerelease": worker["is-prerelease"],
+        "releaseBody": worker.get("release-body"),
         "releaseName": worker["release-name"],
         "upstreamArtifacts": worker.get("upstream-artifacts", []),
     }

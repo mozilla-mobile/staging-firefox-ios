@@ -30,4 +30,5 @@ tasks:
       symbol: vb
       tier: 1
       kind: build
+      platform: ios/opt
 

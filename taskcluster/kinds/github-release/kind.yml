@@ -16,6 +16,7 @@ tasks:
         symbol: gh-r
         tier: 1
         kind: build
+        platform: ios/opt
       worker-type: github
       shipping-phase: ship
       attributes:

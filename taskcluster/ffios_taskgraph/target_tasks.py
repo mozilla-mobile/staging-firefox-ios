@@ -4,6 +4,7 @@
 
 
 from taskgraph.target_tasks import register_target_task
+from .build_types import should_build_type_get_targetted_for_release_type
 
 
 @register_target_task('l10n_screenshots')
@@ -67,13 +68,18 @@ def target_tasks_ship(full_task_graph, parameters, graph_config):
 def does_task_match_release_type(task, release_type):
     return task.attributes.get("release-type") == release_type
 
+
+
 def _filter_release_promotion(
-    full_task_graph, parameters, filtered_for_candidates, shipping_phase
+    full_task_graph, parameters, filtered_for_candidates, shipping_phase,
 ):
     def filter(task, parameters):
         # Include promotion tasks; these will be optimized out
         if task.label in filtered_for_candidates:
             return True
+
+        if not should_build_type_get_targetted_for_release_type(task, parameters["release_type"]):
+            return False
 
         return task.attributes.get(
             "shipping_phase"
@@ -82,3 +88,4 @@ def _filter_release_promotion(
         )
 
     return [l for l, t in full_task_graph.tasks.items() if filter(t, parameters)]
+

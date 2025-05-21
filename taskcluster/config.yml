@@ -21,12 +21,12 @@ workers:
             provisioner: scriptworker-k8s
             implementation: scriptworker-bitrise
             os: scriptworker
-            worker-type: mobile-{level}-bitrise
+            worker-type: mobile-{level}-bitrise-dev
         github:
             provisioner: scriptworker-k8s
             implementation: scriptworker-github
             os: scriptworker
-            worker-type: mobile-{level}-github
+            worker-type: mobile-{level}-github-dev
         images:
             provisioner: 'mobile-{level}'
             implementation: docker-worker
@@ -41,12 +41,12 @@ workers:
             provisioner: scriptworker-k8s
             implementation: scriptworker-shipit
             os: scriptworker
-            worker-type: mobile-{level}-shipit
+            worker-type: mobile-{level}-shipit-dev
         tree:
             provisioner: scriptworker-k8s
             implementation: scriptworker-tree
             os: scriptworker
-            worker-type: mobile-{level}-tree
+            worker-type: mobile-{level}-tree-dev
 
 scriptworker:
     scope-prefix: project:mobile:firefox-ios:releng

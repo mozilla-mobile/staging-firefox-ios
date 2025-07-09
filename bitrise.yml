@@ -2146,6 +2146,50 @@ workflows:
               --org mozilla --project klar-ios "$BITRISE_DSYM_DIR_PATH"
 
 # RelPro workflows
+  release_promotion_promote_focus:
+    before_run:
+    - focus-clone-and-build-dependencies
+    - focus-set-project-version
+    - focus-set-default-browser-entitlement
+    - focus-configure-nimbus
+    - focus-configure-sentry
+    steps:
+    - script@1.2.1:
+        # If the current bitrise application is `staging-firefox-ios`, then
+        # this is a test release made from the staging repository.
+        # Ignore the value passed by release promotion for `BITRISE_SCHEME` and
+        # force it to `FirefoxStaging`, which makes it use non production
+        # certs/profiles. Also override the export method since the scheme is
+        # using a developer ID, not a distribution one
+        title: Set staging environment variables
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -ex
+            envman add --key EXPORT_METHOD --value development
+        run_if: |-
+          {{enveq "BITRISE_APP_TITLE" "staging-firefox-ios"}}
+    - certificate-and-profile-installer@1: {}
+    - xcode-archive@5:
+        inputs:
+        - project_path: focus-ios/Blockzilla.xcodeproj
+        - compile_bitcode: 'no'
+        - upload_bitcode: 'no'
+        - team_id: 43AQ936H96
+        - export_method: "$EXPORT_METHOD"
+        - output_tool: xcodebuild
+        - distribution_method: "$EXPORT_METHOD"
+        - export_development_team: 43AQ936H96
+        - configuration: "FocusDebug"
+        - scheme: "FocusDebug"
+        title: Build Focus
+    - deploy-to-bitrise-io@2.9.2: {}
+    envs:
+    - opts:
+        is_expand: false
+      EXPORT_METHOD: app-store
+    description: This step is used during release promotion to build a focus release
+
   release_promotion_promote:
     before_run:
     - SPM_Common_Steps
@@ -2336,19 +2380,19 @@ app:
     TEST_FLIGHT_EXTERNAL_GROUP_NAME: Nightly
 
 
-trigger_map:
-- push_branch: main
-  pipeline: pipeline_build_and_test
-- push_branch: epic-branch/*
-  pipeline: pipeline_build_and_test
-- push_branch: release/*
-  pipeline: pipeline_build_and_test
-- pull_request_target_branch: main
-  pipeline: pipeline_build_and_test
-- pull_request_target_branch: epic-branch/*
-  pipeline: pipeline_build_and_test
-- pull_request_target_branch: release/v*
-  pipeline: pipeline_build_and_test
+#trigger_map:
+#- push_branch: main
+#  pipeline: pipeline_build_and_test
+#- push_branch: epic-branch/*
+#  pipeline: pipeline_build_and_test
+#- push_branch: release/*
+#  pipeline: pipeline_build_and_test
+#- pull_request_target_branch: main
+#  pipeline: pipeline_build_and_test
+#- pull_request_target_branch: epic-branch/*
+#  pipeline: pipeline_build_and_test
+#- pull_request_target_branch: release/v*
+#  pipeline: pipeline_build_and_test
 
 meta:
   bitrise.io:

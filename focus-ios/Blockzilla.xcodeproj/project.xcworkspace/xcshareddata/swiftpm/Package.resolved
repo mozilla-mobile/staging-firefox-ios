@@ -47,12 +47,21 @@
         }
       },
       {
+        "package": "MarkdownKit",
+        "repositoryURL": "https://github.com/bmoliveira/MarkdownKit.git",
+        "state": {
+          "branch": null,
+          "revision": "39ea7a3fc7e65bcafe55152592b834859be574a5",
+          "version": "1.7.3"
+        }
+      },
+      {
         "package": "MozillaRustComponentsSwift",
         "repositoryURL": "https://github.com/mozilla/rust-components-swift",
         "state": {
           "branch": null,
-          "revision": "08562efca5ea879c9e467073514be939645c54db",
-          "version": "143.0.20250722050353"
+          "revision": "91c0c2c3a2ae28e797cdf765e6c852f3bd83c9e1",
+          "version": "142.0.20250708050416"
         }
       },
       {

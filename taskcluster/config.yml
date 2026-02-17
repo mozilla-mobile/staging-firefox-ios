@@ -41,12 +41,12 @@ workers:
             provisioner: scriptworker-k8s
             implementation: scriptworker-shipit
             os: scriptworker
-            worker-type: mobile-{level}-shipit
+            worker-type: mobile-{level}-shipit-dev
         tree:
             provisioner: scriptworker-k8s
             implementation: scriptworker-tree
             os: scriptworker
-            worker-type: mobile-{level}-tree
+            worker-type: mobile-{level}-tree-dev
 
 scriptworker:
     scope-prefix: project:mobile:firefox-ios:releng
